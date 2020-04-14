@@ -1,0 +1,63 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				            				OPERATING SYSTEMS PROJECT
+
+									SYNCHRONIZATION LIBRARY
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+GROUP:
+
+ROSHAN WARADE 111703062
+MANISH SALVE 111703052
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+WHAT IS DONE :
+
+IMPLEMENATION OF 1. SPINLOCK
+		 2. SEMAPHORES
+		 3. CONDITIONAL VARIABLES
+		 4. RWLOCK
+
+SLEEPLOCK IS NOT DONE
+
+
+synchronization.h conatins all typedefs , function definitions
+sync.c contains function code 
+
+
+TO TEST SPINLOCK:
+
+	COMPILE LIKE : cc -Wall sync.c spinlock_test.c -o spinlock -lpthread
+	RUN : ./spinlock
+
+
+TO TEST SEMAPHORE(2 test codes submitted):
+
+	COMPILE LIKE : cc -Wall sync.c sem_test1.c -o semtest1 -lpthread
+	RUN : ./semtest1
+
+	COMPILE LIKE : cc -Wall sync.c sem_test2.c -o semtest2 -lpthread
+	RUN : ./semtest2
+
+TO TEST CONDITIONAL VARIABLE:
+
+	COMPILE : cc -Wall sync.c cvar_test.c -o cvar -lpthread
+	RUN : ./cvar
+
+TO TEST RWLOCK:
+
+	COMPILE : cc -Wall sync.c rwlock.c -o rwlock -lpthread
+        TO RUN:  ./rwlock a b
+		 Total 3 arguments where a - no of reading loops
+					 b - no of wriring loops
+
+
+
+reference : www.gcc.gnu.org
+	    uresh vahila
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
