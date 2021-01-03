@@ -28,10 +28,8 @@ static inline int xchg(volatile int *addr, int newval) {
 
 
 void spin_lock(struct spinlock *lk) {
-	//while(xchg(&lk->locked, 1) != 0)
 	while(__sync_val_compare_and_swap (&lk->locked, 0 ,1))
 		;
-	sched_yield();
 }
 
 void initlock(struct spinlock *lk) {
@@ -40,7 +38,7 @@ void initlock(struct spinlock *lk) {
 
 
 void spin_unlock(struct spinlock *lk) {
-	//xchg(&lk->locked, 0);
+	
 	__sync_val_compare_and_swap (&lk->locked, 1 ,0);
 }
 
@@ -65,29 +63,15 @@ long x1;
 void block (struct semaphore *s) {
 	spin_unlock(&(s->lk));
 	x1 = sys_futex(&s->val1, FUTEX_WAIT, s->val1, NULL, 0, 0);	
-			
-	//x1 = sys_futex(&s->val1, FUTEX_CMP_REQUEUE, s->val1, NULL, 0, 0);
-		
 	sched_yield();
-	
-	//return sys_futex(&s->val1, FUTEX_WAIT, s->val1, NULL, 0, 0);
 }
 
 void wait(struct semaphore *s) {
 	spin_lock(&(s->lk));
-	//(s->val)--;
-	//spin_unlock(&(s->lk));
 	while(s->val <= 0) {
-		//s->count++;
-		//spin_unlock(&(s->lk));		
-		//x1 = sys_futex(&s->val1, FUTEX_CMP_REQUEUE, s->val1, NULL, 0, 0);
-		//x1 = sys_futex(&s->val1, FUTEX_WAIT, s->val1, NULL, 0, 0);
 		block(s);
-		//sched_yield();
 		spin_lock(&(s->lk));
 	}
-	//spin_unlock(&(s->lk));
-	//spin_lock(&(s->lk));
 	(s->val)--;
 	spin_unlock(&(s->lk));
 	
@@ -96,23 +80,7 @@ long x2;
 
 void sem_signal(struct semaphore *s) {
 	spin_lock(&(s->lk));
-	//(s->val)++;
-	//spin_unlock(&(s->lk));
-	/*if(s->count) {
-		printf("%d", s->count);		
-		//long x = sys_futex(&s->val1, FUTEX_WAKE, 1, NULL, 0, 0);		
-		while((sys_futex(&s->val1, FUTEX_WAKE_OP, 1, NULL, 0, 0)) < 1) {
-			sched_yield();
-		}
-		s->count--;
-	}	
-	else {*/	
-		(s->val)++;
-	//}
-	/*if(s->val <= 0){
-		while((x = sys_futex(&s->val1, FUTEX_WAKE, 1, NULL, 0, 0)) < 1)	
-			sched_yield();	
-	}*/
+	(s->val)++;
 	x2= (sys_futex(&s->val1, FUTEX_WAKE, 1, NULL, 0, 0));
 	sched_yield();
 	//x = dequeue(s->sl) and enqueue(readyq, x);
@@ -132,8 +100,8 @@ void cond_init (condition *c) {
 long x;
 void cond_wait (condition *c, spinlock s) {
 	spin_lock(&c->listlock);
-	x = sys_futex(&c->futex, FUTEX_CMP_REQUEUE, c->futex, NULL, 0, 0);	
-	//x = sys_futex(&c->futex, FUTEX_WAIT, c->futex, NULL, 0, 0);  //add self to the linked list;
+	//x = sys_futex(&c->futex, FUTEX_CMP_REQUEUE, c->futex, NULL, 0, 0);	
+	x = sys_futex(&c->futex, FUTEX_WAIT, c->futex, NULL, 0, 0);  //add self to the linked list;
 	spin_unlock(&c->listlock);
 	spin_lock(&s);
 	x = sys_futex(&c->futex, FUTEX_WAIT, c->futex, NULL, 0, 0);
